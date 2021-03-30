@@ -7,7 +7,7 @@ import './todo.scss';
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
 
-const ToDo = () => {
+export default function ToDo(){
 
   const [list, setList] = useState([]);
 
@@ -75,7 +75,7 @@ const ToDo = () => {
       <section className="todo">
 
         <div>
-          <TodoForm handleSubmit={_addItem} />
+          <TodoForm addItem={_addItem} />
         </div>
 
         <div>
@@ -89,4 +89,4 @@ const ToDo = () => {
   );
 };
 
-export default ToDo;
+
