@@ -4,16 +4,27 @@ body, html {
     padding:0;
     width: 100%;
 }
+
+header {
+  display:flex;
+  flex-wrap: wrap;
+  flex-direction:row;
+  justify-content:center;
+  padding:.5em 1em;
+}
+.headerOne{
+  width:100%;
+}
+.toDoCount{
+margin-top: 20px;
+height: 10vh;
+width: 80%;
+justify-self: center;
+}
+
 .todo-details {
     display:flex;
     flex-direction:column;
-
-    header {
-        display:flex;
-        flex-direction:row;
-        justify-content:space-between;
-        padding:.5em 1em;
-    }
 
     .item {
         flex:1;
@@ -41,6 +52,29 @@ body, html {
             margin-bottom: 1em;
         }
     }
+    .complete-true {
+        background: seagreen;
+        text-decoration:line-through;
+        &:hover {
+           background: pink;
+      }
+    }
+    .complete-false {
+      background: pink;
+      &:hover {
+         background: seagreen;
+    }
+  }
+
+.formGroup{
+  margin-right: 10vw;
+  margin-left: 10vw;
+}
+
+.listGroup{
+  width: 100%;
+  margin-right: 10vw
+}
 
     ul {
         list-style-type:none;
@@ -54,16 +88,6 @@ body, html {
             flex-direction:row;
             font-size: .75em;
             margin: .75em .5em;
-
-            &.complete-true {
-              span {
-                background: pink;
-                text-decoration:line-through;
-                &:hover {
-                   background: seagreen;
-                }
-              }
-            }
 
             span {
                 background: #e0e0e0;

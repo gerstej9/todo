@@ -1,13 +1,18 @@
-import React from 'react';
 
 import ToDo from './components/todo/todo.js';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <>
-        <ToDo />
-      </>
-    );
-  }
+function App(){
+  // let [title, setTitle] = useState('');
+  // useEffect(() => {
+  //   setTitle('Hooks Demo');
+  //   return () => console.log('components did unmount');
+  // }, []);
+
+  return (
+    <>
+      <ToDo />
+    </>
+  );
 }
+
+export default App;
