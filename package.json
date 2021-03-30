@@ -38,5 +38,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "## Overview An application designed to provide a to do list that can have items added and marked as completed",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gerstej9/todo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gerstej9/todo/issues"
+  },
+  "homepage": "https://github.com/gerstej9/todo#readme"
 }
