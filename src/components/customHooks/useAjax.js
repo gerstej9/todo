@@ -1,74 +1,25 @@
 import { useState} from 'react';
 import axios from 'axios';
 
-const useAjax = (url, method, item ) => {
+const useAjax = ( ) => {
+  const [data, setData] = useState({});
 
-  const [list, setList] = useState([]);
+  //get list initially => set data to the list
+  // add item => set data to the item
+  // toggle complete => set data to the item toggled
 
-  const _addItem = async (item, url, method) => {
-    item.due = new Date();
+  const request =  async (api, method, input) => {
     let newItem = await axios({
       method: method,
-      url: url,
-      data: {
-        text: item.text,
-        assignee: item.assignee,
-        difficulty: item.difficulty,
-        due: item.due,
-        complete: item.completed,
-        _id: item._id
-      },
+      url: api,
+      data: input,
     })
-    .catch(console.error);
-    setList([...list, newItem.data])
-  };
-
-  const _toggleComplete = async id => {
-
-    let item = list.filter(i => i._id === id)[0] || {};
-
-    if (item._id) {
-
-      item.complete = !item.complete;
-
-      let url = `${url}/${id}`;
-
-      let updatedItem = await axios({
-        method: 'put',
-        url: url,
-        data: {
-          text: item.text,
-          assignee: item.assignee,
-          difficulty: item.difficulty,
-          id: item.id,
-          complete: item.complete,
-        }
-      })
-        .catch(console.error);
-        setList(list.map(listItem => listItem._id === item._id ? updatedItem.data : listItem));
-    }
-  };
-
-
-  const _getTodoItems = async () => {
-    let list = await axios({
-      method: method,
-      url: url,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-    })
-      .catch(console.error);
-      console.log(list);
-      setList(list.data.results);
-  };
-
+    setData(newItem.data);
+    return newItem.data;
+    };
   return [
-    _addItem,
-    _toggleComplete,
-    _getTodoItems,
-  ]
-
+    data,
+    request];
 }
 
 export default useAjax;
