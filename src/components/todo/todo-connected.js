@@ -1,33 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-
+import NavBar from 'react-bootstrap/NavBar';
 import './todo.scss';
+import axios from 'axios';
+import useAjax from '../customHooks/useAjax.js'
 
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
 
 export default function ToDo(){
 
+[_addItem, _toggleCompleted, _getTodoItems] = useAjax();
+
+
+
   const [list, setList] = useState([]);
 
-  const _addItem = (item) => {
+  const _addItem = async (item) => {
     item.due = new Date();
-    fetch(todoAPI, {
+    let newItem = await axios({
       method: 'post',
-      mode: 'cors',
-      cache: 'no-cache',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(item)
+      url: todoAPI,
+      data: {
+        text: item.text,
+        assignee: item.assignee,
+        difficulty: item.difficulty,
+        due: item.due,
+        complete: item.completed,
+        _id: item._id
+      },
     })
-      .then(response => response.json())
-      .then(savedItem => {
-        setList([...list, savedItem])
-      })
-      .catch(console.error);
+    .catch(console.error);
+    newItem = useAjax(url, method, body)
+    setList([...list, newItem.data])
   };
 
-  const _toggleComplete = id => {
+  const _toggleComplete = async id => {
 
     let item = list.filter(i => i._id === id)[0] || {};
 
@@ -37,54 +46,66 @@ export default function ToDo(){
 
       let url = `${todoAPI}/${id}`;
 
-      fetch(url, {
+      let updatedItem = await axios({
         method: 'put',
-        mode: 'cors',
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
+        url: url,
+        data: {
+          text: item.text,
+          assignee: item.assignee,
+          difficulty: item.difficulty,
+          id: item.id,
+          complete: item.complete,
+        }
       })
-        .then(response => response.json())
-        .then(savedItem => {
-          setList(list.map(listItem => listItem._id === item._id ? savedItem : listItem));
-        })
         .catch(console.error);
+        setList(list.map(listItem => listItem._id === item._id ? updatedItem.data : listItem));
     }
   };
 
-  const _getTodoItems = () => {
-    fetch(todoAPI, {
+  useEffect(() => {
+    document.title = `To Do (${list.filter(item => !item.complete).length})`;
+  }, [list])
+
+  const _getTodoItems = async () => {
+    let list = await axios({
       method: 'get',
-      mode: 'cors',
+      url: todoAPI,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
     })
-      .then(data => data.json())
-      .then(data => setList(data.results))
       .catch(console.error);
+      console.log(list);
+      setList(list.data.results);
   };
 
-  useEffect(_getTodoItems, []);
+  useEffect(() => {
+    _getTodoItems()
+  }, []);
 
   return (
     <>
-      <header>
-        <h2>
-          There are {list.filter(item => !item.complete).length} Items To Complete
-        </h2>
-      </header>
+        <header>
+          <NavBar className="headerOne"style={{color:"white"}}bg="primary" variant="dark" >Home</NavBar>
+          <br></br>
+          <NavBar className="toDoCount" style={{color:"white"}}bg="dark" variant="dark" >
+              To Do List Manager({list.filter(item => !item.complete).length})
+          </NavBar>
+        </header>
 
-      <section className="todo">
+        <section className="todo">
 
-        <div>
-          <TodoForm addItem={_addItem} />
-        </div>
+          <div className="formGroup">
+            <TodoForm callback={_addItem} />
+          </div>
 
-        <div>
-          <TodoList
-            list={list}
-            handleComplete={_toggleComplete}
-          />
-        </div>
-      </section>
+          <div className="listGroup">
+            <TodoList
+              list={list}
+              handleComplete={_toggleComplete}
+            />
+          </div>
+        </section>
     </>
   );
 };

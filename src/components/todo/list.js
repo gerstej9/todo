@@ -7,11 +7,10 @@ export default function TodoList({list, handleComplete}){
         {list.map(item => (
           <ListGroup.Item as="li"
             className={`complete-${item.complete.toString()}`}
+            onClick={() => handleComplete(item._id)}
             key={item._id}
           >
-            <span onClick={() => handleComplete(item._id)}>
-              {item.text} assigned to {item.assignee}
-            </span>
+            {item.text} assigned to {item.assignee}
           </ListGroup.Item>
         ))}
       </ListGroup>
