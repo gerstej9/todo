@@ -1,39 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import NavBar from 'react-bootstrap/NavBar';
+import {Navbar} from 'react-bootstrap';
 import './todo.scss';
-import axios from 'axios';
 import useAjax from '../customHooks/useAjax.js'
 
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
 
+
 export default function ToDo(){
 
-[_addItem, _toggleCompleted, _getTodoItems] = useAjax();
-
-
-
+  // const [api, setAPI] = useState({});
+  // const [method, setMethod] = useState({});
+  // const[input, setInput] = useState({});
+  const [data, request] = useAjax()
   const [list, setList] = useState([]);
-
   const _addItem = async (item) => {
     item.due = new Date();
-    let newItem = await axios({
-      method: 'post',
-      url: todoAPI,
-      data: {
+    let input = {
         text: item.text,
         assignee: item.assignee,
         difficulty: item.difficulty,
         due: item.due,
-        complete: item.completed,
         _id: item._id
-      },
-    })
-    .catch(console.error);
-    newItem = useAjax(url, method, body)
-    setList([...list, newItem.data])
+      }
+    let newItem = await request(todoAPI, 'post', input);
+    setList([...list, newItem])
   };
 
   const _toggleComplete = async id => {
@@ -45,20 +38,15 @@ export default function ToDo(){
       item.complete = !item.complete;
 
       let url = `${todoAPI}/${id}`;
-
-      let updatedItem = await axios({
-        method: 'put',
-        url: url,
-        data: {
-          text: item.text,
-          assignee: item.assignee,
-          difficulty: item.difficulty,
-          id: item.id,
-          complete: item.complete,
+      let input = {
+        text: item.text,
+        assignee: item.assignee,
+        difficulty: item.difficulty,
+        id: item.id,
+        complete: item.complete,
         }
-      })
-        .catch(console.error);
-        setList(list.map(listItem => listItem._id === item._id ? updatedItem.data : listItem));
+      let updatedItem = await request( url, 'put', input);
+        setList(list.map(listItem => listItem._id === item._id ? updatedItem : listItem));
     }
   };
 
@@ -67,16 +55,9 @@ export default function ToDo(){
   }, [list])
 
   const _getTodoItems = async () => {
-    let list = await axios({
-      method: 'get',
-      url: todoAPI,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-    })
-      .catch(console.error);
-      console.log(list);
-      setList(list.data.results);
+    let list = await request(todoAPI, 'get', {});
+
+      setList(list.results);
   };
 
   useEffect(() => {
@@ -86,11 +67,11 @@ export default function ToDo(){
   return (
     <>
         <header>
-          <NavBar className="headerOne"style={{color:"white"}}bg="primary" variant="dark" >Home</NavBar>
+          <Navbar style={{color:"white"} }bg="primary" variant="dark" className="headerOne">Home</Navbar>
           <br></br>
-          <NavBar className="toDoCount" style={{color:"white"}}bg="dark" variant="dark" >
+          <Navbar className="toDoCount" style={{color:"white"}}bg="dark" variant="dark" >
               To Do List Manager({list.filter(item => !item.complete).length})
-          </NavBar>
+          </Navbar>
         </header>
 
         <section className="todo">
