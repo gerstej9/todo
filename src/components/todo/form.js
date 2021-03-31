@@ -1,23 +1,13 @@
 import React from 'react';
-import { useState } from 'react';
 import {Button} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
+import useForm from '../customHooks/useForm.js';
 
-export default function TodoForm({addItem}){
+export default function TodoForm({callback}){
 
-  let [item, setItem] = useState({});
-  const handleInputChange = e => {
-    setItem({...item, [e.target.name]: e.target.value } );
-  };
+  const [handleInputChange, handleSubmit] = useForm(callback);
 
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    e.target.reset();
-    addItem(item);
-    setItem({});
-  };
     return (
       <>
         <Card style={{ width: '18rem' }}>
