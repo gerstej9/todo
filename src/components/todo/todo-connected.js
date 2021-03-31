@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+import {Navbar} from 'react-bootstrap';
 import './todo.scss';
 import axios from 'axios';
 import useAjax from '../customHooks/useAjax.js'
@@ -81,9 +82,9 @@ export default function ToDo(){
         <header>
           <h2 className="headerOne">Home</h2>
           <br></br>
-          <h2 >
+          <Navbar className="toDoCount" style={{color:"white"}}bg="dark" variant="dark" >
               To Do List Manager({list.filter(item => !item.complete).length})
-          </h2>
+          </Navbar>
         </header>
 
         <section className="todo">
