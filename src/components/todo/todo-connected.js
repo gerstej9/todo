@@ -11,8 +11,6 @@ const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
 export default function ToDo(){
 
-[_addItem, _toggleCompleted, _getTodoItems] = useAjax();
-
 
 
   const [list, setList] = useState([]);
@@ -31,8 +29,6 @@ export default function ToDo(){
         _id: item._id
       },
     })
-    .catch(console.error);
-    newItem = useAjax(url, method, body)
     setList([...list, newItem.data])
   };
 
@@ -57,7 +53,6 @@ export default function ToDo(){
           complete: item.complete,
         }
       })
-        .catch(console.error);
         setList(list.map(listItem => listItem._id === item._id ? updatedItem.data : listItem));
     }
   };
@@ -74,7 +69,6 @@ export default function ToDo(){
         'Access-Control-Allow-Origin': '*',
       },
     })
-      .catch(console.error);
       console.log(list);
       setList(list.data.results);
   };

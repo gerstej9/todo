@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 test('renders form with functionality', async () => {
   let handleUpdate = jest.fn();
-  render(<Form  addItem={handleUpdate} />);
+  render(<Form  callback={handleUpdate} />);
 
 
 

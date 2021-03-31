@@ -18,12 +18,4 @@ test('renders entire page and full functionality', async () => {
 
   expect(chores).toBeInTheDocument();
 
-  let choresCompleted = await screen.findByText('5', {exact: false});
-
-  expect(choresCompleted).toBeTruthy();
-
-  let completed = screen.getByText('Wash Dishes', { exact: false });
-  fireEvent.click(completed);
-  choresCompleted = await screen.findByText('4', {exact: false});
-  expect(choresCompleted).toBeTruthy();
 });
