@@ -4,6 +4,7 @@ import TodoList from './list.js';
 import {Navbar} from 'react-bootstrap';
 import './todo.scss';
 import useAjax from '../customHooks/useAjax.js'
+import SettingsProvider from '../../context/Settings.js'
 
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
@@ -64,6 +65,14 @@ export default function ToDo(){
     _getTodoItems()
   }, []);
 
+
+  const _deleteItem = async id => {
+    let url = `${todoAPI}/${id}`;
+    await request(url, 'delete', {});
+    let list = await request(todoAPI, 'get', {});
+    setList(list.results);
+  }
+
   return (
     <>
         <header>
@@ -79,13 +88,15 @@ export default function ToDo(){
           <div className="formGroup">
             <TodoForm callback={_addItem} />
           </div>
-
-          <div className="listGroup">
-            <TodoList
-              list={list}
-              handleComplete={_toggleComplete}
-            />
-          </div>
+          <SettingsProvider>
+            <div className="listGroup">
+              <TodoList
+                list={list}
+                handleComplete={_toggleComplete}
+                handleDelete={_deleteItem}
+              />
+            </div>
+          </SettingsProvider>
         </section>
     </>
   );
