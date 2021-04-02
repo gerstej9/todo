@@ -7,8 +7,9 @@ export default function TodoList({list, handleComplete, handleDelete}){
 
   let context = useContext(SettingsContext)
   const [page, setPage] = useState(1);
-  const [newList, setNewList] = useState(list);
-
+  const [sortedList, setSortedList] = useState(list);
+  const [paginatedList, setPaginatedList] = useState(list);
+// console.log(paginatedList);
   
   const handleToggle = (e, settings) =>{
     e.preventDefault();
@@ -18,17 +19,26 @@ export default function TodoList({list, handleComplete, handleDelete}){
 
   const handleSort = (e, settings) =>{
     e.preventDefault();
-    settings.updateSort(e.target.value);
-    listSort();
+    context.updateSort(e.target.value);
+    // listSort();
     // console.log(settings.sort);
   }
 
+  useEffect(() => {
+    console.log(context.sort)
+    listSort()
+  }, [context.sort])
+
   const handleNumberItems = (e, settings) =>{
     e.preventDefault();
-    settings.updateNumber(e.target.numberItems.value);
-    console.log(settings.numberItems);
-    listPagination();
+    context.updateNumber(e.target.numberItems.value);
+    // console.log(context.numberItems);
+    // listPagination();
   }
+
+  useEffect(() => {
+    listPagination()
+  }, [context.numberItems])
 
   const pageEdit = (e) => {
     // console.log(e.target.innerText);
@@ -44,16 +54,16 @@ export default function TodoList({list, handleComplete, handleDelete}){
   const listDisplayCompleted = () => {
     // setNewList(newList.filter(item => !item.complete));
     if(context.completed ==='false'){
-      setNewList(list);
+      setPaginatedList(sortedList);
     }else{
-      setNewList(newList.filter(item => !item.complete));
+      setPaginatedList(sortedList.filter(item => !item.complete));
     }
   }
 
   const listSort = () => {
       let param = context.sort;
       console.log(param);
-      let nextList = newList.sort((l,r) => {
+      let nextList = sortedList.sort((l,r) => {
       if(l[context.sort] > r[context.sort]){
         return 1;
       } else if(l[context.sort] < r[context.sort]){
@@ -61,37 +71,43 @@ export default function TodoList({list, handleComplete, handleDelete}){
       } else 
       return 0
     });
-    setNewList(nextList);
+    console.log(nextList);
+    // setSortedList(nextList);
+    setPaginatedList(nextList);
   }
 
   const listPagination = () => {
-    if(newList[0]){
-    let nextList = [];
-    // console.log(list);
-    // console.log(settings, page);
-    let min = context.numberItems * (page-1)
-    let max = (context.numberItems * page);
-    for(let i = min; i < max; i++){
-      // console.log(i);
-      nextList.push(newList[i]);
-      }
-    // console.log(nextList);
-    setNewList(nextList);
+    console.log(context.numberItems);
+    // console.log(sortedList);
+    if(sortedList[0]){
+      let nextList = [];
+      // console.log(list);
+      // console.log(settings, page);
+      let min = context.numberItems * (page-1)
+      let max = (context.numberItems * page);
+      for(let i = min; i < max; i++){
+        // console.log(sortedList[i])
+        // console.log(i);
+        nextList.push(sortedList[i]);
+        }
+      // console.log(nextList);
+      setPaginatedList(nextList);
     }
   }
 
   useEffect(() =>{
-    setNewList(list);
+    setSortedList(list);
+    setPaginatedList(list);
   },[list])
 
-  // useEffect(() => {
-  //   listPagination();
-  //   console.log(page);
-  // }, [page])
+  useEffect(() => {
+    listPagination();
+    console.log(page);
+  }, [page])
 
-  // useEffect(() =>{
-  //   listPagination();
-  // },[])
+  useEffect(() =>{
+    listPagination();
+  },[])
 
   // useEffect(() => {
   //   listPagination();
@@ -100,7 +116,7 @@ export default function TodoList({list, handleComplete, handleDelete}){
 
 //  let newList = listDisplayCompleted(list);
 
-
+    
     return (
       <ListGroup as="ul">
         <SettingsContext.Consumer>
@@ -120,7 +136,7 @@ export default function TodoList({list, handleComplete, handleDelete}){
             </div>
           )}
         </SettingsContext.Consumer>
-        {newList.map(item => (
+        {paginatedList.map(item => (
           <Card
             className={`complete-${item.complete.toString()}`}
             key={item._id}
